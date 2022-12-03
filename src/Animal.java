@@ -4,6 +4,10 @@ import de.ur.mi.oop.graphics.Circle;
 /*
     Diese Klasse dient als gemeinsamer Grundbaustein für die Wolf- und Sheep-Klassen.
     Sie gibt alle Eigenschaften und Methoden vor, die sich diese beiden teilen.
+    Da es metaphorisch betrachtet kein "Tier" gibt, dass nicht spezifiziert werden kann -
+    also in dieser Welt Wolf oder Schaf ist - wird die Klasse als "abstract" deklariert.
+    Damit wird verhindert, dass z.B. mit "new Animal(...)" eine Instanz von Animal erstellt werden kann.
+    Instanzen können nur von Sub-Klassen, also Wolf oder Schaf, erstellt werden.
  */
 public abstract class Animal {
 
@@ -13,10 +17,8 @@ public abstract class Animal {
 
     // Der Körper wird durch eine Kreis-Form dargestellt.
     protected Circle body;
-
-    protected float movementX;
-    protected float movementY;
-
+    // Die Bewegung bei jedem Update wird durch einen 2d-Vektor dargestellt.
+    protected Vector movementVector;
     // Attribut zur Darstellung, ob ein Animal bereits gestorben ist.
     protected boolean isAlive;
 
@@ -24,10 +26,9 @@ public abstract class Animal {
         Allgemeiner Konstruktor für alle Sub-Klassen von Animal.
         In den Konstruktoren der Sub-Klassen wird dieser Konstruktor mit dem Aufruf super(...) referenziert.
      */
-    public Animal(float x, float y, float size, Color color, float movementX, float movementY) {
+    public Animal(float x, float y, float size, Color color, Vector movementVector) {
         this.body = new Circle(x, y, size, color);
-        this.movementX = movementX;
-        this.movementY = movementY;
+        this.movementVector = movementVector;
         isAlive = true;
     }
 
@@ -43,7 +44,7 @@ public abstract class Animal {
         Nach jeder Bewegung wird eine Kollision mit dem Canvas-Rand geprüft.
      */
     public void update() {
-        body.move(movementX, movementY);
+        body.move(movementVector.x, movementVector.y);
         handleCanvasBorderCollision();
     }
 
@@ -57,17 +58,17 @@ public abstract class Animal {
     private void handleCanvasBorderCollision() {
         if (body.getXPos() - body.getRadius() < 0) {
             body.setXPos(body.getRadius());
-            movementX *= -1;
+            movementVector.mirrorX();
         } else if (body.getXPos() + body.getRadius() > WolvesAndSheep.CANVAS_WIDTH ){
             body.setXPos(WolvesAndSheep.CANVAS_WIDTH - body.getRadius());
-            movementX *= -1;
+            movementVector.mirrorX();
         }
         if (body.getYPos() - body.getRadius() < 0) {
             body.setYPos(body.getRadius());
-            movementY *= -1;
+            movementVector.mirrorY();
         } else if (body.getYPos() + body.getRadius() > WolvesAndSheep.CANVAS_HEIGHT) {
             body.setYPos(WolvesAndSheep.CANVAS_HEIGHT - body.getRadius());
-            movementY *= -1;
+            movementVector.mirrorY();
         }
     }
 
@@ -77,9 +78,7 @@ public abstract class Animal {
         Zur Überprüfung wird die hitTest-Methode der Circle-Instanz genutzt.
      */
     public void checkCollision(Animal animal) {
-        if (!animal.isAlive || !this.isAlive)
-            return;
-
+        if (!animal.isAlive || !this.isAlive) return;
         if (body.hitTest(animal.getX(), animal.getY())) {
             handleConfrontation(animal);
         }
@@ -88,8 +87,9 @@ public abstract class Animal {
     /*
         In dieser Methode soll auf einen Zusammenprall mit einem anderen Animal reagiert werden.
         Da sich das Verhalten je nachdem ob es sich um Schaf oder Wolf handelt, unterscheidet,
-        wird hier ein leerer Rumpf vorgegeben.
-        Die handleConfrontation-Methode soll in der geerbten Klasse überschrieben werden, um für diese das gewünschte Verhalten zu implementieren.
+        wird hier kein Rumpf vorgegeben.
+        Durch das "abstract"-Schlüsselwort kann stattdessen erzwungen werden, dass jede Klasse die von Animal erbt,
+        die handleConfrontation-Methode überschreiben muss.
      */
     public abstract void handleConfrontation(Animal animal);
 

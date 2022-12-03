@@ -4,6 +4,7 @@ import de.ur.mi.oop.colors.Colors;
 /*
     Diese Klasse soll einen Wolf darstellen. Dafür erbt sie von der Animal-Klasse.
     Durch die Vererbung übernimmt sie alle Eigenschaften und Methoden der Animal-Klasse.
+    Alle Methoden, die in der Animal-Klasse als "abstract" deklariert wurden, müssen überschrieben werden.
  */
 public class Wolf extends Animal {
 
@@ -20,8 +21,8 @@ public class Wolf extends Animal {
     /*
         Im Konstruktor muss der Super-Konstruktor der Animal-Klasse aufgerufen werden.
      */
-    public Wolf(float x, float y, float size, float movementX, float movementY) {
-        super(x, y, size, WOLF_COLOR, movementX, movementY);
+    public Wolf(float x, float y, float size, Vector movementVector) {
+        super(x, y, size, WOLF_COLOR, movementVector);
         timeSinceLastEatenOrSlept = 0;
     }
 
@@ -102,8 +103,7 @@ public class Wolf extends Animal {
             } else if (animal.getSize() > this.getSize()) {
                 this.die();
             } else {
-                movementX *= -1;
-                movementY *= -1;
+                movementVector.mirror();
             }
         }
     }

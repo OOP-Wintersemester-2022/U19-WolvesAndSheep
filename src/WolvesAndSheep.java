@@ -7,6 +7,7 @@ import java.util.Random;
 
 public class WolvesAndSheep extends GraphicsApp {
 
+    /* Private Konstanten */
     public static final int CANVAS_HEIGHT = 800;
     public static final int CANVAS_WIDTH = 800;
     private static final int FRAME_RATE = 60;
@@ -44,8 +45,7 @@ public class WolvesAndSheep extends GraphicsApp {
                     rand.nextFloat(CANVAS_WIDTH),
                     rand.nextFloat(CANVAS_HEIGHT),
                     WOLF_SIZE,
-                    getRandomFloat(MIN_SPEED, MAX_SPEED),
-                    getRandomFloat(MIN_SPEED, MAX_SPEED)
+                    Vector.getRandom(MIN_SPEED, MAX_SPEED)
             );
         }
         for (int i = WOLF_COUNT; i < WOLF_COUNT + SHEEP_COUNT; i++) {
@@ -53,14 +53,9 @@ public class WolvesAndSheep extends GraphicsApp {
                     rand.nextFloat(CANVAS_WIDTH),
                     rand.nextFloat(CANVAS_HEIGHT),
                     SHEEP_SIZE,
-                    getRandomFloat(MIN_SPEED, MAX_SPEED),
-                    getRandomFloat(MIN_SPEED, MAX_SPEED)
+                    Vector.getRandom(MIN_SPEED, MAX_SPEED)
             );
         }
-    }
-
-    private float getRandomFloat(float min, float max) {
-        return rand.nextFloat(max - min) + min;
     }
 
     /*
@@ -87,9 +82,9 @@ public class WolvesAndSheep extends GraphicsApp {
         for (int i = 0; i < animals.length; i++) {
             Animal currentAnimal = animals[i];
             currentAnimal.update();
-            for (int k = 0; k < animals.length; k++) {
-                if (i != k) {
-                    currentAnimal.checkCollision(animals[k]);
+            for (int j = 0; j < animals.length; j++) {
+                if (i != j) {
+                    currentAnimal.checkCollision(animals[j]);
                 }
             }
         }
@@ -103,4 +98,5 @@ public class WolvesAndSheep extends GraphicsApp {
     public static void main(String[] args) {
         GraphicsAppLauncher.launch();
     }
+
 }
